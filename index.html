@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>螺丝扭力计算器</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 15px;
+            background-color: #f5f5f5;
+            font-size: 16px; /* 基础字体放大 */
+        }
+
+        .calculator {
+            background-color: white;
+            padding: 20px 15px;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        h2 {
+            font-size: 24px; /* 标题放大 */
+            margin-bottom: 25px;
+            color: #333;
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #444;
+            font-size: 17px; /* 标签字体放大 */
+        }
+
+        select {
+            width: 100%;
+            padding: 12px; /* 触摸区域放大 */
+            border: 2px solid #007AFF;
+            border-radius: 8px;
+            font-size: 16px;
+            -webkit-appearance: none; /* 移除iOS默认样式 */
+            background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="%23007AFF" d="M7 10l5 5 5-5z"/></svg>') no-repeat right 12px center/15px auto;
+        }
+
+        .result {
+            margin: 25px 0;
+            padding: 18px;
+            background-color: #f0f9ff;
+            border-radius: 8px;
+            border: 1px solid #007AFF30;
+            font-size: 18px; /* 结果字体放大 */
+        }
+
+        .note {
+            margin-top: 20px;
+            font-size: 14px;
+            color: #666;
+            line-height: 1.6;
+        }
+
+        /* 移动端优化 */
+        @media (max-width: 414px) { /* 适配iPhone 11宽度 */
+            body {
+                padding: 10px;
+                font-size: 17px;
+            }
+            
+            .calculator {
+                padding: 15px;
+            }
+            
+            h2 {
+                font-size: 22px;
+                margin-bottom: 20px;
+            }
+            
+            select {
+                padding: 14px;
+                font-size: 17px;
+            }
+            
+            .result {
+                font-size: 17px;
+                padding: 15px;
+            }
+        }
+
+        @media (max-width: 375px) { /* 适配较小屏幕 */
+            body {
+                font-size: 16px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 保持原有HTML结构不变 -->
+    <div class="calculator">
+        <h2>螺丝扭力计算器</h2>
+        
+        <div class="input-group">
+            <label for="screwSize">选择螺丝规格：</label>
+            <select id="screwSize">
+                <option value="M3">M3</option>
+                <option value="M4">M4</option>
+                <option value="M5">M5</option>
+                <option value="M6">M6</option>
+                <option value="M8">M8</option>
+                <option value="M10">M10</option>
+                <option value="M12">M12</option>
+            </select>
+        </div>
+
+        <div class="result" id="result">
+            <div id="torqueValue"></div>
+            <div id="note"></div>
+        </div>
+
+        <div class="note">
+            <p>* 注意：</p >
+            <ul>
+                <li>建议值仅供参考，实际应用请参考制造商规范</li>
+                <li>数值受材质、润滑情况、装配要求等因素影响</li>
+                <li>关键部位请使用专业扭力扳手</li>
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        // 保持原有JavaScript不变
+        const torqueData = {
+            'M3': { min: 0.5, max: 0.8 },
+            'M4': { min: 1.2, max: 2.0 },
+            'M5': { min: 2.5, max: 3.5 },
+            'M6': { min: 4.0, max: 6.0 },
+            'M8': { min: 15, max: 22 },
+            'M10': { min: 30, max: 44 },
+            'M12': { min: 50, max: 70 }
+        };
+
+        const screwSelect = document.getElementById('screwSize');
+        const torqueValue = document.getElementById('torqueValue');
+        const note = document.getElementById('note');
+
+        function updateResult() {
+            const selectedSize = screwSelect.value;
+            const data = torqueData[selectedSize];
+            
+            torqueValue.innerHTML = `
+                <strong>${selectedSize} 建议扭力值：</strong>
+                ${data.min} - ${data.max} N·m
+            `;
+
+            note.innerHTML = selectedSize === 'M8' 
+                ? '<em style="color:#ff3b30;">* 注意：M8的扭力值受材质影响较大，请特别注意材料特性</em>' 
+                : '';
+        }
+
+        screwSelect.addEventListener('change', updateResult);
+        updateResult();
+    </script>
+</body>
+</html>
