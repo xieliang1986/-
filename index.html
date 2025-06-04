@@ -4,136 +4,329 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>谢亮螺丝扭力计算器</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        
         body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-            max-width: 600px;
-            margin: 0 auto;
-            padding: 15px;
-            background-color: #f5f5f5;
-            font-size: 16px; /* 基础字体放大 */
-        }
-
-        .calculator {
-            background-color: white;
-            padding: 20px 15px;
-            border-radius: 12px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-        }
-
-        h2 {
-            font-size: 24px; /* 标题放大 */
-            margin-bottom: 25px;
+            font-family: 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #e4edf5 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
             color: #333;
         }
-
-        .input-group {
-            margin-bottom: 20px;
+        
+        .calculator {
+            background: white;
+            border-radius: 18px;
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.15);
+            overflow: hidden;
+            max-width: 500px;
+            width: 100%;
+            transition: transform 0.3s ease;
         }
-
-        label {
-            display: block;
+        
+        .calculator:hover {
+            transform: translateY(-5px);
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #1a6dcc 0%, #0d4a9e 100%);
+            color: white;
+            padding: 25px 20px;
+            text-align: center;
+            position: relative;
+        }
+        
+        .header h2 {
+            font-size: 28px;
+            font-weight: 700;
             margin-bottom: 8px;
-            font-weight: 600;
-            color: #444;
-            font-size: 17px; /* 标签字体放大 */
+            letter-spacing: 0.5px;
         }
-
+        
+        .header p {
+            opacity: 0.85;
+            font-size: 16px;
+        }
+        
+        .content {
+            padding: 25px;
+        }
+        
+        .input-group {
+            margin-bottom: 22px;
+        }
+        
+        .input-group label {
+            display: block;
+            margin-bottom: 12px;
+            font-weight: 600;
+            color: #2c3e50;
+            font-size: 17px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .input-group label i {
+            margin-right: 10px;
+            color: #1a6dcc;
+        }
+        
         select {
             width: 100%;
-            padding: 12px; /* 触摸区域放大 */
-            border: 2px solid #007AFF;
-            border-radius: 8px;
-            font-size: 16px;
-            -webkit-appearance: none; /* 移除iOS默认样式 */
-            background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="%23007AFF" d="M7 10l5 5 5-5z"/></svg>') no-repeat right 12px center/15px auto;
+            padding: 15px 20px;
+            border: 2px solid #e1e8ed;
+            border-radius: 12px;
+            font-size: 17px;
+            background-color: #f8fafc;
+            transition: all 0.3s ease;
+            appearance: none;
+            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="%231a6dcc"><path d="M7 10l5 5 5-5z"/></svg>');
+            background-repeat: no-repeat;
+            background-position: right 15px center;
+            background-size: 20px;
         }
-
-        .result {
+        
+        select:focus {
+            outline: none;
+            border-color: #1a6dcc;
+            box-shadow: 0 0 0 3px rgba(26, 109, 204, 0.2);
+        }
+        
+        .unit-toggle {
+            display: flex;
+            align-items: center;
+            justify-content: center;
             margin: 25px 0;
-            padding: 18px;
-            background-color: #f0f9ff;
-            border-radius: 8px;
-            border: 1px solid #007AFF30;
-            font-size: 18px; /* 结果字体放大 */
+            padding: 15px;
+            background: #f0f7ff;
+            border-radius: 12px;
+            border: 1px solid #d1e3f8;
         }
-
+        
+        .unit-toggle span {
+            font-weight: 600;
+            color: #1a6dcc;
+            font-size: 17px;
+            margin: 0 15px;
+        }
+        
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 60px;
+            height: 34px;
+        }
+        
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+        
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #1a6dcc;
+            transition: .4s;
+            border-radius: 34px;
+        }
+        
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 26px;
+            width: 26px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+        
+        input:checked + .slider {
+            background-color: #ff9500;
+        }
+        
+        input:checked + .slider:before {
+            transform: translateX(26px);
+        }
+        
+        .result {
+            margin: 30px 0;
+            padding: 25px;
+            background: linear-gradient(135deg, #e6f2ff 0%, #d4e6ff 100%);
+            border-radius: 12px;
+            border: 1px solid #b8d4ff;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .result:before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #1a6dcc, #0d4a9e);
+        }
+        
+        .torque-value {
+            font-size: 32px;
+            font-weight: 800;
+            color: #0d4a9e;
+            margin: 15px 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        
+        .torque-value span {
+            margin: 0 8px;
+        }
+        
+        .unit {
+            font-size: 24px;
+            font-weight: 600;
+            color: #1a6dcc;
+        }
+        
         .note {
-            margin-top: 20px;
-            font-size: 14px;
-            color: #666;
+            margin-top: 25px;
+            padding: 20px;
+            background: #fff9e6;
+            border-radius: 12px;
+            border: 1px solid #ffe699;
+            font-size: 15px;
+            color: #7d6608;
             line-height: 1.6;
         }
-
-        /* 移动端优化 */
-        @media (max-width: 414px) { /* 适配iPhone 11宽度 */
-            body {
-                padding: 10px;
-                font-size: 17px;
-            }
-            
-            .calculator {
-                padding: 15px;
-            }
-            
-            h2 {
-                font-size: 22px;
-                margin-bottom: 20px;
-            }
-            
-            select {
-                padding: 14px;
-                font-size: 17px;
-            }
-            
-            .result {
-                font-size: 17px;
-                padding: 15px;
-            }
+        
+        .note-title {
+            font-weight: 700;
+            margin-bottom: 10px;
+            color: #b69500;
+            display: flex;
+            align-items: center;
         }
-
-        @media (max-width: 375px) { /* 适配较小屏幕 */
-            body {
-                font-size: 16px;
+        
+        .note-title i {
+            margin-right: 8px;
+        }
+        
+        .note ul {
+            padding-left: 22px;
+        }
+        
+        .note li {
+            margin-bottom: 8px;
+        }
+        
+        .screw-icon {
+            font-size: 22px;
+            margin: 0 5px;
+            color: #1a6dcc;
+        }
+        
+        .conversion-note {
+            margin-top: 12px;
+            font-size: 14px;
+            color: #666;
+            font-style: italic;
+        }
+        
+        @media (max-width: 480px) {
+            .header {
+                padding: 20px 15px;
+            }
+            
+            .header h2 {
+                font-size: 24px;
+            }
+            
+            .content {
+                padding: 20px;
+            }
+            
+            .torque-value {
+                font-size: 28px;
             }
         }
     </style>
 </head>
 <body>
-    <!-- 保持原有HTML结构不变 -->
     <div class="calculator">
-        <h2>谢亮螺丝扭力计算器</h2>
+        <div class="header">
+            <h2><i class="fas fa-tools"></i> 谢亮螺丝扭力计算器</h2>
+            <p>精准计算 · 专业装配 · 安全可靠</p>
+        </div>
         
-        <div class="input-group">
-            <label for="screwSize">选择螺丝规格：</label>
-            <select id="screwSize">
-                <option value="M3">M3</option>
-                <option value="M4">M4</option>
-                <option value="M5">M5</option>
-                <option value="M6">M6</option>
-                <option value="M8">M8</option>
-                <option value="M10">M10</option>
-                <option value="M12">M12</option>
-            </select>
-        </div>
-
-        <div class="result" id="result">
-            <div id="torqueValue"></div>
-            <div id="note"></div>
-        </div>
-
-        <div class="note">
-            <p>* 注意：</p >
-            <ul>
-                <li>建议值仅供参考，实际应用请参考制造商规范</li>
-                <li>数值受材质、润滑情况、装配要求等因素影响</li>
-                <li>关键部位请使用专业扭力扳手</li>
-            </ul>
+        <div class="content">
+            <div class="input-group">
+                <label for="screwSize">
+                    <i class="fas fa-bolt"></i> 选择螺丝规格：
+                </label>
+                <select id="screwSize">
+                    <option value="M3">M3 <i class="fas fa-screw"></i></option>
+                    <option value="M4">M4</option>
+                    <option value="M5">M5</option>
+                    <option value="M6" selected>M6</option>
+                    <option value="M8">M8</option>
+                    <option value="M10">M10</option>
+                    <option value="M12">M12</option>
+                </select>
+            </div>
+            
+            <div class="unit-toggle">
+                <span>公制 (N·m)</span>
+                <label class="switch">
+                    <input type="checkbox" id="unitToggle">
+                    <span class="slider"></span>
+                </label>
+                <span>英制 (lbf·ft)</span>
+            </div>
+            
+            <div class="result">
+                <div class="torque-title">建议扭力值范围</div>
+                <div class="torque-value">
+                    <span id="minTorque">4.0</span>
+                    <span>-</span>
+                    <span id="maxTorque">6.0</span>
+                    <span class="unit" id="unitDisplay">N·m</span>
+                </div>
+                <div id="note" class="custom-note"></div>
+                <div class="conversion-note" id="conversionNote">1 N·m ≈ 0.738 lbf·ft</div>
+            </div>
+            
+            <div class="note">
+                <div class="note-title"><i class="fas fa-exclamation-circle"></i> 注意事项</div>
+                <ul>
+                    <li>建议值仅供参考，实际应用请参考制造商规范</li>
+                    <li>数值受材质、润滑情况、装配要求等因素影响</li>
+                    <li>关键部位请使用专业扭力扳手进行装配</li>
+                    <li>不同单位制下的数值已自动换算</li>
+                </ul>
+            </div>
         </div>
     </div>
 
     <script>
-        // 保持原有JavaScript不变
+        // 螺丝扭力数据（公制单位 N·m）
         const torqueData = {
             'M3': { min: 0.5, max: 0.8 },
             'M4': { min: 1.2, max: 2.0 },
@@ -143,26 +336,68 @@
             'M10': { min: 30, max: 44 },
             'M12': { min: 50, max: 70 }
         };
-
+        
+        // 获取DOM元素
         const screwSelect = document.getElementById('screwSize');
-        const torqueValue = document.getElementById('torqueValue');
-        const note = document.getElementById('note');
-
+        const minTorqueEl = document.getElementById('minTorque');
+        const maxTorqueEl = document.getElementById('maxTorque');
+        const unitDisplay = document.getElementById('unitDisplay');
+        const noteEl = document.getElementById('note');
+        const unitToggle = document.getElementById('unitToggle');
+        const conversionNote = document.getElementById('conversionNote');
+        
+        // 当前单位状态 (true = 英制, false = 公制)
+        let isImperial = false;
+        
+        // 单位转换函数
+        function convertToImperial(value) {
+            // 1 N·m = 0.737562 lbf·ft
+            return (value * 0.737562).toFixed(1);
+        }
+        
+        // 更新显示结果
         function updateResult() {
             const selectedSize = screwSelect.value;
             const data = torqueData[selectedSize];
             
-            torqueValue.innerHTML = `
-                <strong>${selectedSize} 建议扭力值：</strong>
-                ${data.min} - ${data.max} N·m
-            `;
-
-            note.innerHTML = selectedSize === 'M8' 
-                ? '<em style="color:#ff3b30;">* 注意：M8的扭力值受材质影响较大，请特别注意材料特性</em>' 
-                : '';
+            if (isImperial) {
+                // 显示英制单位
+                minTorqueEl.textContent = convertToImperial(data.min);
+                maxTorqueEl.textContent = convertToImperial(data.max);
+                unitDisplay.textContent = 'lbf·ft';
+            } else {
+                // 显示公制单位
+                minTorqueEl.textContent = data.min;
+                maxTorqueEl.textContent = data.max;
+                unitDisplay.textContent = 'N·m';
+            }
+            
+            // 特殊备注信息
+            if (selectedSize === 'M8') {
+                noteEl.innerHTML = '<i class="fas fa-exclamation-triangle"></i> 注意：M8螺丝扭力值受材质影响较大，请特别注意材料特性';
+                noteEl.className = 'custom-note warning';
+            } else {
+                noteEl.innerHTML = '';
+                noteEl.className = 'custom-note';
+            }
         }
-
+        
+        // 事件监听器
         screwSelect.addEventListener('change', updateResult);
+        
+        unitToggle.addEventListener('change', function() {
+            isImperial = this.checked;
+            updateResult();
+            
+            // 更新单位转换说明
+            if (isImperial) {
+                conversionNote.textContent = "1 lbf·ft ≈ 1.356 N·m";
+            } else {
+                conversionNote.textContent = "1 N·m ≈ 0.738 lbf·ft";
+            }
+        });
+        
+        // 初始化
         updateResult();
     </script>
 </body>
